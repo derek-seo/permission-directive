@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {Option, Permission} from "./permission/directive/permission.directive";
 
 @Component({
@@ -9,16 +9,17 @@ import {Option, Permission} from "./permission/directive/permission.directive";
 export class AppComponent {
   option: Option = {
     isDisplay: false,
-    currentPermission: Permission.USER,
+    currentPermission: Permission.MASTER,
     requiredPermission: Permission.MASTER,
   };
 
   ngOnInit(): void {
     setTimeout(() => {
-      this.option = { ...this.option, currentPermission: Permission.USER };
+      this.option = {...this.option, currentPermission: Permission.USER};
     }, 3000);
+
     setTimeout(() => {
-      this.option = { ...this.option, currentPermission: Permission.MASTER };
+      this.option = {...this.option, currentPermission: Permission.USER};
     }, 6000);
   }
 

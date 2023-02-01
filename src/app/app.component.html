@@ -1,5 +1,6 @@
-<button *appPermission="option"
-        (permissionClick)=onClick($event)
-        (permissionError)=onPermissionError($event)>
-  click
-</button>
+<ng-template [appPermission]="option"
+             (permissionClick)=onClick($event)
+             (permissionError)=onPermissionError($event)>
+  <button appPermissionElement>click</button>
+  <app2></app2>
+</ng-template>

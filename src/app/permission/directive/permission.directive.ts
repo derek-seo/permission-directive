@@ -1,7 +1,7 @@
 import {
   Directive,
-  EmbeddedViewRef,
   EventEmitter,
+  Host,
   Input,
   OnDestroy,
   OnInit,
@@ -9,8 +9,9 @@ import {
   TemplateRef,
   ViewContainerRef,
 } from '@angular/core';
-import {fromEvent, Subject, Subscription, takeUntil} from 'rxjs';
+import {Subject, Subscription, takeUntil} from 'rxjs';
 import {filter} from 'rxjs/operators';
+import {PermissionService} from "../service/permission.service";
 
 export enum Permission {
   ADMIN = 'ADMIN',
@@ -32,6 +33,7 @@ export interface Option {
 
 @Directive({
   selector: '[appPermission]',
+  providers: [PermissionService],
 })
 export class PermissionDirective implements OnInit, OnDestroy {
   private readonly _destroy$ = new Subject<void>();
@@ -65,7 +67,9 @@ export class PermissionDirective implements OnInit, OnDestroy {
 
   constructor(
     private templateRef: TemplateRef<any>,
-    private viewContainer: ViewContainerRef
+    private viewContainer: ViewContainerRef,
+    @Host()
+    private permissionService: PermissionService
   ) {
   }
 
@@ -78,16 +82,12 @@ export class PermissionDirective implements OnInit, OnDestroy {
     }
   }
 
-  subscribeClickEvent(element: HTMLElement): void {
-    if (!element) {
-      return;
-    }
-
+  subscribeClickEvent(): void {
     if (this.clickSubscription) {
       this.clickSubscription.unsubscribe();
     }
 
-    this.clickSubscription = fromEvent(element, 'click')
+    this.clickSubscription = this.permissionService.getClickEvent$()
       .pipe(
         filter(() => {
           const {currentPermission, requiredPermission}: Option =
@@ -101,13 +101,13 @@ export class PermissionDirective implements OnInit, OnDestroy {
             isValidPermission,
             option: this.internalOption,
           });
+
           return isValidPermission;
         }),
         takeUntil(this._destroy$)
       )
       .subscribe({
         next: ($event: Event) => {
-          console.log($event);
           this.permissionClick.emit($event);
         },
       });
@@ -147,13 +147,12 @@ export class PermissionDirective implements OnInit, OnDestroy {
     isValidPermission: boolean;
   }) {
     if (!this.hasView && (isValidPermission || isDisplay)) {
-      const view: EmbeddedViewRef<any> = this.viewContainer.createEmbeddedView(
+      this.hasView = true;
+      this.viewContainer.createEmbeddedView(
         this.templateRef
       );
-      this.hasView = true;
-      const viewElement = view.rootNodes?.[0] || null;
 
-      this.subscribeClickEvent(viewElement);
+      this.subscribeClickEvent();
     } else if (this.hasView && !isValidPermission && !isDisplay) {
       this.viewContainer.clear();
       this.hasView = false;

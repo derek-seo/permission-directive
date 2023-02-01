@@ -16,8 +16,4 @@ export class PermissionService implements OnDestroy {
   getClickEvent$(): Subject<Event> {
     return this.clickEvent$;
   }
-
-  destroy$(): void {
-    this.clickEvent$.complete();
-  }
 }

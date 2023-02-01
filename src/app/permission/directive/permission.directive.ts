@@ -114,7 +114,6 @@ export class PermissionDirective implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.permissionService.destroy$();
     this._destroy$.next();
     this._destroy$.complete();
   }

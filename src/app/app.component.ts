@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {Option, Permission} from "./permission/directive/permission.directive";
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,26 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'permission-directive';
+  option: Option = {
+    isDisplay: false,
+    currentPermission: Permission.USER,
+    requiredPermission: Permission.MASTER,
+  };
+
+  ngOnInit(): void {
+    setTimeout(() => {
+      this.option = { ...this.option, currentPermission: Permission.USER };
+    }, 3000);
+    setTimeout(() => {
+      this.option = { ...this.option, currentPermission: Permission.MASTER };
+    }, 6000);
+  }
+
+  onClick($event: Event): void {
+    console.log('click event');
+  }
+
+  onPermissionError(error: any): void {
+    console.log(error);
+  }
 }

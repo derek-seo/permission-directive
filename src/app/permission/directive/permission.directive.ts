@@ -97,9 +97,11 @@ export class PermissionDirective implements OnInit, OnDestroy {
             currentPermission,
           });
 
-          this.permissionEffect({
+          // 권한에러 이벤트 발생시킴
+          this.permissionErrorEffect({
             isValidPermission,
-            option: this.internalOption,
+            currentPermission,
+            requiredPermission,
           });
 
           return isValidPermission;

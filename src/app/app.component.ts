@@ -8,7 +8,7 @@ import {Option, Permission} from "./permission/directive/permission.directive";
 })
 export class AppComponent {
   option: Option = {
-    isDisplay: false,
+    isDisplay: true,
     currentPermission: Permission.MASTER,
     requiredPermission: Permission.MASTER,
   };
@@ -19,8 +19,12 @@ export class AppComponent {
     }, 3000);
 
     setTimeout(() => {
-      this.option = {...this.option, currentPermission: Permission.USER};
+      this.option = {...this.option, currentPermission: Permission.MASTER};
     }, 6000);
+
+    setTimeout(() => {
+      this.option = {...this.option, currentPermission: Permission.USER};
+    }, 9000);
   }
 
   onClick($event: Event): void {
